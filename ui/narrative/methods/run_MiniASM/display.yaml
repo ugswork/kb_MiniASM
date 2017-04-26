@@ -1,0 +1,113 @@
+#
+# define display information
+#
+name: Assemble with MiniASM-UD
+tooltip: |
+    Assemble reads using the MiniASM assembler.
+screenshots: []
+
+icon: MiniASM.png
+
+#
+# define a set of similar methods that might be useful to the user
+#
+suggestions:
+    apps:
+        related:
+            []
+        next:
+            []
+    methods:
+        related:
+            []
+        next:
+            [annotate_contigset]
+
+#
+# Configure the display and description of parameters
+#
+parameters :
+    read_libraries :
+        ui-name : |
+            Read library
+        short-hint : |
+            The libraries of reads to be assembled. Reads length should be <= 512.
+        long-hint : |
+            The libraries of reads to be assembled. Reads length should be <= 512.
+    output_contigset_name :
+        ui-name : |
+            Output ContigSet
+        short-hint : |
+            The name under which the resulting ContigSet will be saved in the Narrative
+        long-hint : |
+            The name under which the resulting ContigSet will be saved in the Narrative
+    min_contig_arg :
+        ui-name : |
+            Minimum Contig Length
+        short-hint : |
+            The shortest contig to accept in the resulting assembly object, should be < largest contig size
+        long-hint : |
+            The shortest contig to accept in the resulting assembly object, should be < largest contig size
+    mink_arg :
+        ui-name : |
+            Minimum k value
+        short-hint : |
+            Minimum k value (<=124)
+        long-hint : |
+            Minimum k value (<=124)
+    maxk_arg :
+        ui-name : |
+            Maximum k value
+        short-hint : |
+            Maximum k value (<=124), should be > min k
+        long-hint : |
+            Maximum k value (<=124), should be > min k
+    step_arg :
+        ui-name : |
+            Increment of k-mer
+        short-hint : |
+            Increment of k-mer for each iteration, should be appropriate to min k and max k values
+        long-hint : |
+            Increment of k-mer for each iteration, should be appropriate to min k and max k values
+
+
+#
+# Configure the display and description of parameters
+#
+parameter-groups:
+        kval_args :
+                ui-name : |
+                        k values
+                short-hint : |
+                        Min, max k values and increment of k-mer
+                long-hint : |
+                        Min, max k values and increment of k-mer
+
+
+description : |
+    <p>
+    This is a KBase wrapper for the
+    <a href="https://github.com/loneknightpy/miniasm" target="_blank">MiniASM</a>
+    genomic reads assembler.
+    </p>
+
+    <p>
+    MiniASM is designed for assembling short reads (around 100bp).
+    </p>
+    <p>
+    Operational notes:
+    <ul>
+        <li> Currently the wrapper only supports Illumina, IonTorrent, PacBIO CLR and PacBIO CCS
+             in FASTQ format, either uncompressed or gzipped.</li>
+    </ul>
+    If you need support for command line options not exposed in the wrapper
+    please contact KBase Help.
+    </p>
+    <p>MiniASM Assembler: </p>
+
+publications :
+    -
+        display-text: |
+            S. Nurk, A. Bankevich, D. Antipov, A. A. Gurevich, A. Korobeynikov, A. Lapidus, A. D. Prjibelsky, A. Pyshkin, A. Sirotkin, Y. Sirotkin, R. Stepanauskas, J. S. McLean, R. Lasken, S. R. Clingenpeel, T. Woyke, G. Tesler, M. A. Alekseyev, and P. A. Pevzner. Assembling Single-Cell Genomes and Mini-Metagenomes From Chimeric MDA Products. Journal of Computational Biology 20(10) (2013), 714-737. doi:10.1089/cmb.2013.0084
+        link: http://www.ncbi.nlm.nih.gov/pubmed/24093227
+        pmid: 24093227
