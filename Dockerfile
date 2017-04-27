@@ -22,6 +22,13 @@ RUN pip install requests --upgrade \
 
 # -----------------------------------------
 
+# Install minimap & miniasm
+RUN cd /opt \
+    && git clone https://github.com/lh3/minimap && (cd minimap && make) \
+    && git clone https://github.com/lh3/miniasm && (cd miniasm && make)
+
+ENV PATH $PATH:/opt/minimap:/opt/miniasm
+
 COPY ./ /kb/module
 RUN mkdir -p /kb/module/work
 RUN chmod -R a+rw /kb/module
