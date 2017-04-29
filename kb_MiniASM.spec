@@ -19,17 +19,17 @@ module kb_MiniASM {
         string output_contigset_name - the name of the output contigset
     */
     typedef structure {
-        int mink_arg;                  /*  (=20)  minimum k value (<=124) */
-        int maxk_arg;                  /*  (=100)  maximum k value (<=124) */
-        int step_arg;                  /*  (=20)  increment of k-mer of each iteration  */
-    } kval_args_type;
+        int min_span;       /* default 2000 */
+        int min_coverage;   /* default 3 */
+        int min_overlap;    /* default 2000 */
+    } opt_args_type;
 
     typedef structure {
         string               workspace_name;
         list<paired_end_lib> read_libraries;                /*  input reads  */
         string               output_contigset_name;         /*  name of output contigs */
-        int                  min_contig_arg;                /*  (=200) minimum size of contig */
-        kval_args_type       kval_args;
+        int                  min_contig;                    /*  (=200) minimum size of contig */
+        opt_args_type        opt_args;
     } MiniASM_Params;
     
     /* Output parameters for MiniASM run.
