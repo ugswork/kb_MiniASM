@@ -34,11 +34,11 @@
             }
         },
         {
-            "id": "min_contig_arg",
+            "id": "min_contig",
             "optional": true,
             "advanced": true,
             "allow_multiple": false,
-            "default_values": [ "200" ],
+            "default_values": [ "300" ],
             "field_type": "text",
             "text_options": {
                 "validate_as" : "int",
@@ -46,50 +46,47 @@
             }
         },
         {
-            "id": "mink_arg",
+            "id": "min_span",
             "optional": false,
             "advanced": true,
             "allow_multiple": false,
-            "default_values": [ "20" ],
+            "default_values": [ "2000" ],
             "field_type": "text",
             "text_options": {
                 "validate_as" : "int",
-		        "min_int" : 1,
-                "max_int" : 124
+		        "min_int" : 1
             }
         },
         {
-            "id": "maxk_arg",
+            "id": "min_coverage",
             "optional": false,
             "advanced": true,
             "allow_multiple": false,
-            "default_values": [ "100" ],
+            "default_values": [ "3" ],
             "field_type": "text",
             "text_options": {
                 "validate_as" : "int",
-		        "min_int" : 2,
-                "max_int" : 124
+		        "min_int" : 1
             }
         },
         {
-            "id": "step_arg",
+            "id": "min_overlap",
             "optional": false,
             "advanced": true,
             "allow_multiple": false,
-            "default_values": [ "20" ],
+            "default_values": [ "2000" ],
             "field_type": "text",
             "text_options": {
                 "validate_as" : "int",
-		        "min_int" : 1,
-                "max_int" : 124
+		        "min_int" : 1
             }
         }
     ],
 
     "parameter-groups": [
 	   {
-		"id": "kval_args",
-		"parameters": ["mink_arg", "maxk_arg", "step_arg"],
+		"id": "opt_args",
+		"parameters": ["min_span", "min_coverage", "min_overlap"],
 	        "optional": true,
            "advanced": true,
 		"allow_multiple": false,
@@ -109,19 +106,20 @@
                 },
                 {
                     "input_parameter": "read_libraries",
-                    "target_property": "read_libraries"
+                    "target_property": "read_libraries",
+                    "target_type_transform": "list<ref>"
                 },
                 {
                     "input_parameter": "output_contigset_name",
                     "target_property": "output_contigset_name"
                 },
                 {
-                    "input_parameter": "min_contig_arg",
-                    "target_property": "min_contig_arg"
+                    "input_parameter": "min_contig",
+                    "target_property": "min_contig"
                 },
                 {
-                    "input_parameter": "kval_args",
-                    "target_property": "kval_args"
+                    "input_parameter": "opt_args",
+                    "target_property": "opt_args"
                 }
             ],
             "output_mapping": [
