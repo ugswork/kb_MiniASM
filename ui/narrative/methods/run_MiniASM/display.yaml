@@ -1,7 +1,7 @@
 #
 # define display information
 #
-name: Assemble with MiniASM-UD
+name: Assemble with MiniASM
 tooltip: |
     Assemble long reads using the ultrafast MiniASM assembler.
 screenshots: []
@@ -59,21 +59,21 @@ parameters :
             The shortest contig to accept in the resulting assembly object, should be < largest contig size
     min_span :
         ui-name : |
-            min span argument
+            min span
         short-hint : |
             min span
         long-hint : |
             min span
     min_coverage :
         ui-name : |
-            min coverage argument
+            min coverage
         short-hint : |
             min coverage
         long-hint : |
             min coverage
     min_overlap :
         ui-name : |
-            min overlap argument
+            min overlap
         short-hint : |
             min overlap
         long-hint : |

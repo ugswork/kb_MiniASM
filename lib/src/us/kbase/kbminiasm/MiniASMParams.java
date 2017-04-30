@@ -23,8 +23,8 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
     "workspace_name",
     "read_libraries",
     "output_contigset_name",
-    "min_contig_arg",
-    "kval_args"
+    "min_contig",
+    "opt_args"
 })
 public class MiniASMParams {
 
@@ -34,10 +34,10 @@ public class MiniASMParams {
     private List<String> readLibraries;
     @JsonProperty("output_contigset_name")
     private java.lang.String outputContigsetName;
-    @JsonProperty("min_contig_arg")
-    private Long minContigArg;
+    @JsonProperty("min_contig")
+    private Long minContig;
     /**
-     * <p>Original spec-file type: kval_args_type</p>
+     * <p>Original spec-file type: opt_args_type</p>
      * <pre>
      * Input parameters for running MiniASM.
      * string workspace_name - the name of the workspace from which to take
@@ -48,8 +48,8 @@ public class MiniASMParams {
      * </pre>
      * 
      */
-    @JsonProperty("kval_args")
-    private KvalArgsType kvalArgs;
+    @JsonProperty("opt_args")
+    private OptArgsType optArgs;
     private Map<java.lang.String, Object> additionalProperties = new HashMap<java.lang.String, Object>();
 
     @JsonProperty("workspace_name")
@@ -97,23 +97,23 @@ public class MiniASMParams {
         return this;
     }
 
-    @JsonProperty("min_contig_arg")
-    public Long getMinContigArg() {
-        return minContigArg;
+    @JsonProperty("min_contig")
+    public Long getMinContig() {
+        return minContig;
     }
 
-    @JsonProperty("min_contig_arg")
-    public void setMinContigArg(Long minContigArg) {
-        this.minContigArg = minContigArg;
+    @JsonProperty("min_contig")
+    public void setMinContig(Long minContig) {
+        this.minContig = minContig;
     }
 
-    public MiniASMParams withMinContigArg(Long minContigArg) {
-        this.minContigArg = minContigArg;
+    public MiniASMParams withMinContig(Long minContig) {
+        this.minContig = minContig;
         return this;
     }
 
     /**
-     * <p>Original spec-file type: kval_args_type</p>
+     * <p>Original spec-file type: opt_args_type</p>
      * <pre>
      * Input parameters for running MiniASM.
      * string workspace_name - the name of the workspace from which to take
@@ -124,13 +124,13 @@ public class MiniASMParams {
      * </pre>
      * 
      */
-    @JsonProperty("kval_args")
-    public KvalArgsType getKvalArgs() {
-        return kvalArgs;
+    @JsonProperty("opt_args")
+    public OptArgsType getOptArgs() {
+        return optArgs;
     }
 
     /**
-     * <p>Original spec-file type: kval_args_type</p>
+     * <p>Original spec-file type: opt_args_type</p>
      * <pre>
      * Input parameters for running MiniASM.
      * string workspace_name - the name of the workspace from which to take
@@ -141,13 +141,13 @@ public class MiniASMParams {
      * </pre>
      * 
      */
-    @JsonProperty("kval_args")
-    public void setKvalArgs(KvalArgsType kvalArgs) {
-        this.kvalArgs = kvalArgs;
+    @JsonProperty("opt_args")
+    public void setOptArgs(OptArgsType optArgs) {
+        this.optArgs = optArgs;
     }
 
-    public MiniASMParams withKvalArgs(KvalArgsType kvalArgs) {
-        this.kvalArgs = kvalArgs;
+    public MiniASMParams withOptArgs(OptArgsType optArgs) {
+        this.optArgs = optArgs;
         return this;
     }
 
@@ -163,7 +163,7 @@ public class MiniASMParams {
 
     @Override
     public java.lang.String toString() {
-        return ((((((((((((("MiniASMParams"+" [workspaceName=")+ workspaceName)+", readLibraries=")+ readLibraries)+", outputContigsetName=")+ outputContigsetName)+", minContigArg=")+ minContigArg)+", kvalArgs=")+ kvalArgs)+", additionalProperties=")+ additionalProperties)+"]");
+        return ((((((((((((("MiniASMParams"+" [workspaceName=")+ workspaceName)+", readLibraries=")+ readLibraries)+", outputContigsetName=")+ outputContigsetName)+", minContig=")+ minContig)+", optArgs=")+ optArgs)+", additionalProperties=")+ additionalProperties)+"]");
     }
 
 }

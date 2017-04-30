@@ -17,7 +17,7 @@ import us.kbase.common.service.UnauthorizedException;
  * <p>Original spec-file module name: kb_MiniASM</p>
  * <pre>
  * A KBase module: kb_MiniASM
- * A simple wrapper for MiniASM-UD Assembler
+ * A simple wrapper for MiniASM Assembler
  * https://github.com/lh3/miniasm
  * </pre>
  */

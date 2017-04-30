@@ -41,14 +41,13 @@ class kb_MiniASM(object):
            of list of type "paired_end_lib" (The workspace object name of a
            PairedEndLibrary file, whether of the KBaseAssembly or KBaseFile
            type.), parameter "output_contigset_name" of String, parameter
-           "min_contig_arg" of Long, parameter "kval_args" of type
-           "kval_args_type" (Input parameters for running MiniASM. string
-           workspace_name - the name of the workspace from which to take
-           input and store output. list<paired_end_lib> read_libraries -
-           Illumina PairedEndLibrary files to assemble. string
-           output_contigset_name - the name of the output contigset) ->
-           structure: parameter "mink_arg" of Long, parameter "maxk_arg" of
-           Long, parameter "step_arg" of Long
+           "min_contig" of Long, parameter "opt_args" of type "opt_args_type"
+           (Input parameters for running MiniASM. string workspace_name - the
+           name of the workspace from which to take input and store output.
+           list<paired_end_lib> read_libraries - Illumina PairedEndLibrary
+           files to assemble. string output_contigset_name - the name of the
+           output contigset) -> structure: parameter "min_span" of Long,
+           parameter "min_coverage" of Long, parameter "min_overlap" of Long
         :returns: instance of type "MiniASM_Output" (Output parameters for
            MiniASM run. string report_name - the name of the
            KBaseReport.Report workspace object. string report_ref - the

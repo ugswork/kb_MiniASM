@@ -36,8 +36,8 @@ class kb_MiniASM:
 
     Module Description:
     A KBase module: kb_MiniASM
-    A simple wrapper for MiniASM Assembler
-    https://github.com/lh3/miniasm
+A simple wrapper for MiniASM Assembler
+https://github.com/lh3/miniasm
     '''
 
     ######## WARNING FOR GEVENT USERS ####### noqa
@@ -47,8 +47,8 @@ class kb_MiniASM:
     # the latter method is running.
     ######################################### noqa
     VERSION = "0.0.1"
-    GIT_URL = ""
-    GIT_COMMIT_HASH = ""
+    GIT_URL = "https://github.com/ugswork/kb_MiniASM.git"
+    GIT_COMMIT_HASH = "d13742460e84239e2fc72c114f668525ed0de1b9"
 
     #BEGIN_CLASS_HEADER
     # Class variables and functions can be defined in this block
@@ -370,14 +370,13 @@ class kb_MiniASM:
            of list of type "paired_end_lib" (The workspace object name of a
            PairedEndLibrary file, whether of the KBaseAssembly or KBaseFile
            type.), parameter "output_contigset_name" of String, parameter
-           "min_contig_arg" of Long, parameter "kval_args" of type
-           "kval_args_type" (Input parameters for running MiniASM. string
-           workspace_name - the name of the workspace from which to take
-           input and store output. list<paired_end_lib> read_libraries -
-           Illumina PairedEndLibrary files to assemble. string
-           output_contigset_name - the name of the output contigset) ->
-           structure: parameter "mink_arg" of Long, parameter "maxk_arg" of
-           Long, parameter "step_arg" of Long
+           "min_contig" of Long, parameter "opt_args" of type "opt_args_type"
+           (Input parameters for running MiniASM. string workspace_name - the
+           name of the workspace from which to take input and store output.
+           list<paired_end_lib> read_libraries - Illumina PairedEndLibrary
+           files to assemble. string output_contigset_name - the name of the
+           output contigset) -> structure: parameter "min_span" of Long,
+           parameter "min_coverage" of Long, parameter "min_overlap" of Long
         :returns: instance of type "MiniASM_Output" (Output parameters for
            MiniASM run. string report_name - the name of the
            KBaseReport.Report workspace object. string report_ref - the
@@ -499,7 +498,6 @@ class kb_MiniASM:
                              'output is not type dict as required.')
         # return the results
         return [output]
-
     def status(self, ctx):
         #BEGIN_STATUS
         returnVal = {'state': "OK",
