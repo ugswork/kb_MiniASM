@@ -36,8 +36,8 @@ class kb_MiniASM:
 
     Module Description:
     A KBase module: kb_MiniASM
-A simple wrapper for MiniASM-UD Assembler
-https://github.com/lh3/miniasm
+    A simple wrapper for MiniASM Assembler
+    https://github.com/lh3/miniasm
     '''
 
     ######## WARNING FOR GEVENT USERS ####### noqa
@@ -52,12 +52,17 @@ https://github.com/lh3/miniasm
 
     #BEGIN_CLASS_HEADER
     # Class variables and functions can be defined in this block
-    DISABLE_FQ2FA_OUTPUT = False  # should be False in production
-    DISABLE_MiniASM_OUTPUT = False  # should be False in production
+    DISABLE_MINIMAP_OUTPUT = False  # should be False in production
+    DISABLE_MINIASM_OUTPUT = False  # should be False in production
 
     PARAM_IN_WS = 'workspace_name'
     PARAM_IN_LIB = 'read_libraries'
     PARAM_IN_CS_NAME = 'output_contigset_name'
+    PARAM_IN_MIN_CONTIG = 'min_contig'
+    PARAM_IN_OPT_ARGS = 'opt_args'
+    PARAM_IN_MIN_SPAN = 'min_span'
+    PARAM_IN_MIN_COVERAGE = 'min_coverage'
+    PARAM_IN_MIN_OVERLAP = 'min_overlap'
 
     INVALID_WS_OBJ_NAME_RE = re.compile('[^\\w\\|._-]')
     INVALID_WS_NAME_RE = re.compile('[^\\w:._-]')
@@ -76,34 +81,53 @@ https://github.com/lh3/miniasm
               str(time.time()) + ': ' + str(message))
 
 
-    def exec_fq2fa(self, input_reads, outdir):
+    def exec_minimap(self, input_reads, outdir):
 
         if not os.path.exists(outdir):
             os.makedirs(outdir)
 
-        outfile_fasta = os.path.join(outdir, 'fq2fa-output.fasta')
+        minimap_outfile = os.path.join(outdir, 'minimap-output.gz')
 
-        # fq2fa command part of MiniASM package
-        fq2fa_cmd = ['fq2fa', '--merge', '--filter',
-                      input_reads['fwd_file'],  input_reads['rev_file'],
-                      outfile_fasta]
+        minimap_cmd1 = ['minimap', '-Sw5', '-L100', '-m0', '-t8',
+                        input_reads['fwd_file'], input_reads['fwd_file']]
 
-        print("fq2fa CMD:" + str(fq2fa_cmd))
-        self.log(fq2fa_cmd)
+        minimap_cmd2 = ['gzip', '-1']
 
-        if self.DISABLE_FQ2FA_OUTPUT:
+        print("minimap CMD:  " + str(minimap_cmd1) + str(minimap_cmd2) + "  outfile: " + minimap_outfile)
+        self.log(minimap_cmd1)
+        self.log(minimap_cmd2)
+
+        minimap_of = open(minimap_outfile, 'wb')
+
+        if self.DISABLE_MINIMAP_OUTPUT:
             with open(os.devnull, 'w') as null:
-                p = subprocess.Popen(fq2fa_cmd, cwd=self.scratch, shell=False,
-                                     stdout=null)
-        else:
-            p = subprocess.Popen(fq2fa_cmd, cwd=self.scratch, shell=False)
-        retcode = p.wait()
+                p1 = subprocess.Popen(minimap_cmd1, cwd=self.scratch, shell=False,
+                                      stdout=subprocess.PIPE, stderr=null)
 
-        self.log('Return code: ' + str(retcode))
-        if p.returncode != 0:
-            raise ValueError('Error running fq2fa, return code: ' +
-                             str(retcode) + '\n')
-        return outfile_fasta
+                p2 = subprocess.Popen(minimap_cmd2, cwd=self.scratch, shell=False,
+                                      stdin=p1.stdout, stdout=minimap_of, close_fds=True, stderr=null)
+        else:
+
+            p1 = subprocess.Popen(minimap_cmd1, cwd=self.scratch, shell=False,
+                                  stdout=subprocess.PIPE)
+
+            p2 = subprocess.Popen(minimap_cmd2, cwd=self.scratch, shell=False,
+                                  stdin=p1.stdout, stdout=minimap_of, close_fds=True)
+
+        retcode1 = p1.wait()
+        p1.stdout.close()
+
+        if p1.returncode != 0:
+            raise ValueError('Error running minimap, return code: ' +
+                             str(retcode1) + '\n')
+
+        retcode2 = p2.wait()
+
+        if p2.returncode != 0:
+            raise ValueError('Error running gzip, return code: ' +
+                             str(retcode2) + '\n')
+
+        return minimap_outfile
 
 
     def exec_MiniASM(self, reads_data, params_in, outdir):
@@ -115,8 +139,9 @@ https://github.com/lh3/miniasm
 
         # The fq2fa can only be run on a single library
         # The library must be paired end.
-        if len(reads_data) > 1 or reads_data[0]['type'] != 'paired':
-            error_msg = 'MiniASM-UD assembly requires that one and ' + \
+
+        if len(reads_data) > 1:  #or reads_data[0]['type'] != 'paired':
+            error_msg = 'MiniASM assembly requires that one and ' + \
                             'only one paired end library as input.'
             if len(reads_data) > 1:
                 error_msg += ' ' + str(len(reads_data)) + \
@@ -128,47 +153,45 @@ https://github.com/lh3/miniasm
         pprint(reads_data)
         pprint("=============  END OF READS DATA  ===============")
 
-        # first convert input reads_data from fastq to fasta
-        # output fasta file saved in fq2fa_outfile
+        # first convert input reads_data from fastq to paf
+        # output of minimap saved in minimap_outfile
 
-        fq2fa_outfile = self.exec_fq2fa(reads_data[0], outdir)
+        minimap_outfile = self.exec_minimap(reads_data[0], outdir)
 
-        outdir_miniasm = os.path.join(outdir, 'MiniASM_output')
+        miniasm_gfa_outfile = os.path.join(outdir, 'MiniASM_output.gfa')
 
-        # use fq2fa_outfile as input to MiniASM assembler
-        # output files from the assembler saved in outdir
+        # use minimap_outfile as input to MiniASM assembler
+        # output file from the assembler saved in miniasm_gfa_outfile
 
-        MiniASM_cmd = ['MiniASM', '-r',
-                       fq2fa_outfile,
-                       '-o', outdir_miniasm]
+        miniasm_cmd = ['miniasm', '-f', reads_data[0]['fwd_file'],
+                       minimap_outfile]
 
-        if 'min_contig_arg' in params_in and int(params_in['min_contig_arg']) >= 0:
-            MiniASM_cmd.append('--min_contig')
-            MiniASM_cmd.append(str(params_in['min_contig_arg']))
+        if self.PARAM_IN_OPT_ARGS in params_in and params_in[self.PARAM_IN_OPT_ARGS] is not None:
+            oargs = params_in[self.PARAM_IN_OPT_ARGS]
 
-        if 'kval_args' in params_in and params_in['kval_args'] is not None:
-            kargs = params_in['kval_args']
-            if int(kargs['mink_arg']) >= 1:
-                MiniASM_cmd.append('--mink')
-                MiniASM_cmd.append(str(kargs['mink_arg']))
+            if int(oargs[self.PARAM_IN_MIN_SPAN]) > 0:
+                miniasm_cmd.append('-s')
+                miniasm_cmd.append(str(oargs[self.PARAM_IN_MIN_SPAN]))
 
-            if int(kargs['maxk_arg']) >= 2:
-                MiniASM_cmd.append('--maxk')
-                MiniASM_cmd.append(str(kargs['maxk_arg']))
+            if int(oargs[self.PARAM_IN_MIN_COVERAGE]) > 0:
+                miniasm_cmd.append('-c')
+                miniasm_cmd.append(str(oargs[self.PARAM_IN_MIN_COVERAGE]))
 
-            if int(kargs['step_arg']) > 0:
-                MiniASM_cmd.append('--step')
-                MiniASM_cmd.append(str(kargs['step_arg']))
+            if int(oargs[self.PARAM_IN_MIN_OVERLAP]) > 0:
+                miniasm_cmd.append('-o')
+                miniasm_cmd.append(str(oargs[self.PARAM_IN_MIN_OVERLAP]))
 
-        print("\nMiniASM CMD:     " + str(MiniASM_cmd))
-        self.log(MiniASM_cmd)
+        print("\nMiniASM CMD:     " + str(miniasm_cmd) + "Outfile: " + miniasm_gfa_outfile)
+        self.log(miniasm_cmd)
 
-        if self.DISABLE_MiniASM_OUTPUT:
+        miniasm_gfa_of = open(miniasm_gfa_outfile, 'wb')
+
+        if self.DISABLE_MINIASM_OUTPUT:
             with open(os.devnull, 'w') as null:
-                p = subprocess.Popen(MiniASM_cmd, cwd=self.scratch, shell=False,
-                                     stdout=null)
+                p = subprocess.Popen(miniasm_cmd, cwd=self.scratch, shell=False,
+                                     stdout=miniasm_gfa_of, close_fds=True, stderr=null)
         else:
-            p = subprocess.Popen(MiniASM_cmd, cwd=self.scratch, shell=False)
+            p = subprocess.Popen(miniasm_cmd, cwd=self.scratch, shell=False, stdout=miniasm_gfa_of, close_fds=True)
         retcode = p.wait()
 
         self.log('Return code: ' + str(retcode))
@@ -176,7 +199,24 @@ https://github.com/lh3/miniasm
             raise ValueError('Error running MiniASM, return code: ' +
                              str(retcode) + '\n')
 
-        return outdir_miniasm
+        miniasm_fasta_outfile = os.path.join(outdir, 'MiniASM_fasta_output.fa')
+        miniasm_fa_of = open(miniasm_fasta_outfile, 'wb')
+        gfa2fa_cmd = 'awk \'/^S/{print ">"$2"\\n"$3}\'  ' + miniasm_gfa_outfile + ' | fold '
+
+        if self.DISABLE_MINIASM_OUTPUT:
+            with open(os.devnull, 'w') as null:
+                p = subprocess.Popen(gfa2fa_cmd, cwd=self.scratch, shell=False,
+                                     stdout=miniasm_fa_of, close_fds=True, stderr=null)
+        else:
+            p = subprocess.Popen(gfa2fa_cmd, cwd=self.scratch, shell=True, stdout=miniasm_fa_of, close_fds=True)
+        retcode = p.wait()
+
+        self.log('Return code: ' + str(retcode))
+        if p.returncode != 0:
+            raise ValueError('Error running gfa2fa, return code: ' +
+                             str(retcode) + '\n')
+
+        return miniasm_fasta_outfile
 
 
     # adapted from
@@ -254,7 +294,7 @@ https://github.com/lh3/miniasm
                              'name': 'report.html',
                              'label': 'QUAST report'}
                             ],
-             'report_object_name': 'kb_MiniASM-UD_report_' + str(uuid.uuid4()),
+             'report_object_name': 'kb_MiniASM-_report_' + str(uuid.uuid4()),
              'workspace_name': params['workspace_name']
             })
         reportName = report_info['name']
@@ -277,8 +317,6 @@ https://github.com/lh3/miniasm
         if self.PARAM_IN_LIB not in params:
             raise ValueError(self.PARAM_IN_LIB + ' parameter is required')
         if type(params[self.PARAM_IN_LIB]) != list:
-            params[self.PARAM_IN_LIB] = [params[self.PARAM_IN_LIB]]
-        if type(params[self.PARAM_IN_LIB]) != list:
             raise ValueError(self.PARAM_IN_LIB + ' must be a list')
         if not params[self.PARAM_IN_LIB]:
             raise ValueError('At least one reads library must be provided')
@@ -292,6 +330,19 @@ https://github.com/lh3/miniasm
         if self.INVALID_WS_OBJ_NAME_RE.search(params[self.PARAM_IN_CS_NAME]):
             raise ValueError('Invalid workspace object name ' +
                              params[self.PARAM_IN_CS_NAME])
+
+        if self.PARAM_IN_MIN_CONTIG in params:
+            if not isinstance(params[self.PARAM_IN_MIN_CONTIG], int):
+                raise ValueError('min_contig must be of type int')
+
+        if self.PARAM_IN_OPT_ARGS in params and params[self.PARAM_IN_OPT_ARGS] is not None:
+            oargs = params[self.PARAM_IN_OPT_ARGS]
+            if not isinstance(oargs[self.PARAM_IN_MIN_SPAN], int):
+                raise ValueError('min span must be of type int')
+            if not isinstance(oargs[self.PARAM_IN_MIN_COVERAGE], int):
+                raise ValueError('min coverage must be of type int')
+            if not isinstance(oargs[self.PARAM_IN_MIN_OVERLAP], int):
+                raise ValueError('min overlap must be of type int')
 
     #END_CLASS_HEADER
 
@@ -339,10 +390,6 @@ https://github.com/lh3/miniasm
         
         print("===================  IN run_MiniASM")
 
-        print("PARAMS: ")
-        pprint(params)
-        print("============================   END OF PARAMS: ")
-
         # A whole lot of this is adapted or outright copied from
         # https://github.com/msneddon/MEGAHIT
         self.log('Running run_MiniASM with params:\n' + pformat(params))
@@ -355,6 +402,7 @@ https://github.com/lh3/miniasm
 
         # get absolute refs from ws
         wsname = params[self.PARAM_IN_WS]
+        print("Workspace name: " + wsname)
         obj_ids = []
         for r in params[self.PARAM_IN_LIB]:
             obj_ids.append({'ref': r if '/' in r else (wsname + '/' + r)})
@@ -377,7 +425,7 @@ https://github.com/lh3/miniasm
                    'KBaseAssembly.PairedEndLibrary')
         try:
             reads = readcli.download_reads({'read_libraries': reads_params,
-                                            'interleaved': 'false',
+                                            'interleaved': 'true',
                                             'gzipped': None
                                             })['files']
         except ServerError as se:
@@ -393,7 +441,6 @@ https://github.com/lh3/miniasm
                 raise
 
         self.log('Got reads data from converter:\n' + pformat(reads))
-
 
         reads_data = []
         for ref in reads:
@@ -420,17 +467,22 @@ https://github.com/lh3/miniasm
 
         outdir = os.path.join(self.scratch, 'MiniASM_dir')
 
-        miniasm_out = self.exec_MiniASM(reads_data, params, outdir)
-        self.log('MiniASM output dir: ' + miniasm_out)
+        miniasm_outfile = self.exec_MiniASM(reads_data, params, outdir)
+        self.log('MiniASM output dir: ' + miniasm_outfile)
 
         # parse the output and save back to KBase
-        output_contigs = os.path.join(miniasm_out, 'contig.fa')
+
+        output_contigs = miniasm_outfile
+
+        min_contig_len = params['min_contig'] if params.get('min_contig', 0) > 0 else 0
 
         self.log('Uploading FASTA file to Assembly')
         assemblyUtil = AssemblyUtil(self.callbackURL, token=ctx['token'], service_ver='dev')
+
         assemblyUtil.save_assembly_from_fasta({'file': {'path': output_contigs},
                                                'workspace_name': wsname,
-                                               'assembly_name': params[self.PARAM_IN_CS_NAME]
+                                               'assembly_name': params[self.PARAM_IN_CS_NAME],
+                                               'min_contig_len': min_contig_len
                                                })
 
         report_name, report_ref = self.load_report(output_contigs, params, wsname)
@@ -447,6 +499,7 @@ https://github.com/lh3/miniasm
                              'output is not type dict as required.')
         # return the results
         return [output]
+
     def status(self, ctx):
         #BEGIN_STATUS
         returnVal = {'state': "OK",
