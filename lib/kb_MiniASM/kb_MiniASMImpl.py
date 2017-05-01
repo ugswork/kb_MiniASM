@@ -473,7 +473,11 @@ https://github.com/lh3/miniasm
 
         output_contigs = miniasm_outfile
 
-        min_contig_len = params['min_contig'] if params.get('min_contig', 0) > 0 else 0
+        min_contig_len = 0
+
+        if self.PARAM_IN_MIN_CONTIG in params and params[self.PARAM_IN_MIN_CONTIG] is not None:
+            if (int(params[self.PARAM_IN_MIN_CONTIG])) > 0:
+                min_contig_len = int(params[self.PARAM_IN_MIN_CONTIG])
 
         self.log('Uploading FASTA file to Assembly')
         assemblyUtil = AssemblyUtil(self.callbackURL, token=ctx['token'], service_ver='dev')
@@ -481,7 +485,7 @@ https://github.com/lh3/miniasm
         assemblyUtil.save_assembly_from_fasta({'file': {'path': output_contigs},
                                                'workspace_name': wsname,
                                                'assembly_name': params[self.PARAM_IN_CS_NAME],
-                                               'min_contig_len': min_contig_len
+                                               'min_contig_length': min_contig_len
                                                })
 
         report_name, report_ref = self.load_report(output_contigs, params, wsname)
