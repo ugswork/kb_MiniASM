@@ -30,6 +30,7 @@ module kb_MiniASM {
         string               output_contigset_name;         /*  name of output contigs */
         int                  min_contig;                    /*  (=200) minimum size of contig */
         opt_args_type        opt_args;
+        list<string>         extra_params;
     } MiniASM_Params;
     
     /* Output parameters for MiniASM run.

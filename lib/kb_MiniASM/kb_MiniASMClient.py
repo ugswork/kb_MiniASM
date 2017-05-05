@@ -47,7 +47,8 @@ class kb_MiniASM(object):
            list<paired_end_lib> read_libraries - Illumina PairedEndLibrary
            files to assemble. string output_contigset_name - the name of the
            output contigset) -> structure: parameter "min_span" of Long,
-           parameter "min_coverage" of Long, parameter "min_overlap" of Long
+           parameter "min_coverage" of Long, parameter "min_overlap" of Long,
+           parameter "extra_params" of list of String
         :returns: instance of type "MiniASM_Output" (Output parameters for
            MiniASM run. string report_name - the name of the
            KBaseReport.Report workspace object. string report_ref - the

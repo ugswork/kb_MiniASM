@@ -24,7 +24,8 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
     "read_libraries",
     "output_contigset_name",
     "min_contig",
-    "opt_args"
+    "opt_args",
+    "extra_params"
 })
 public class MiniASMParams {
 
@@ -50,6 +51,8 @@ public class MiniASMParams {
      */
     @JsonProperty("opt_args")
     private OptArgsType optArgs;
+    @JsonProperty("extra_params")
+    private List<String> extraParams;
     private Map<java.lang.String, Object> additionalProperties = new HashMap<java.lang.String, Object>();
 
     @JsonProperty("workspace_name")
@@ -151,6 +154,21 @@ public class MiniASMParams {
         return this;
     }
 
+    @JsonProperty("extra_params")
+    public List<String> getExtraParams() {
+        return extraParams;
+    }
+
+    @JsonProperty("extra_params")
+    public void setExtraParams(List<String> extraParams) {
+        this.extraParams = extraParams;
+    }
+
+    public MiniASMParams withExtraParams(List<String> extraParams) {
+        this.extraParams = extraParams;
+        return this;
+    }
+
     @JsonAnyGetter
     public Map<java.lang.String, Object> getAdditionalProperties() {
         return this.additionalProperties;
@@ -163,7 +181,7 @@ public class MiniASMParams {
 
     @Override
     public java.lang.String toString() {
-        return ((((((((((((("MiniASMParams"+" [workspaceName=")+ workspaceName)+", readLibraries=")+ readLibraries)+", outputContigsetName=")+ outputContigsetName)+", minContig=")+ minContig)+", optArgs=")+ optArgs)+", additionalProperties=")+ additionalProperties)+"]");
+        return ((((((((((((((("MiniASMParams"+" [workspaceName=")+ workspaceName)+", readLibraries=")+ readLibraries)+", outputContigsetName=")+ outputContigsetName)+", minContig=")+ minContig)+", optArgs=")+ optArgs)+", extraParams=")+ extraParams)+", additionalProperties=")+ additionalProperties)+"]");
     }
 
 }

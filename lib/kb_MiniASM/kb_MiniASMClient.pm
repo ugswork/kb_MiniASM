@@ -129,6 +129,7 @@ MiniASM_Params is a reference to a hash where the following keys are defined:
 	output_contigset_name has a value which is a string
 	min_contig has a value which is an int
 	opt_args has a value which is a kb_MiniASM.opt_args_type
+	extra_params has a value which is a reference to a list where each element is a string
 paired_end_lib is a string
 opt_args_type is a reference to a hash where the following keys are defined:
 	min_span has a value which is an int
@@ -152,6 +153,7 @@ MiniASM_Params is a reference to a hash where the following keys are defined:
 	output_contigset_name has a value which is a string
 	min_contig has a value which is an int
 	opt_args has a value which is a kb_MiniASM.opt_args_type
+	extra_params has a value which is a reference to a list where each element is a string
 paired_end_lib is a string
 opt_args_type is a reference to a hash where the following keys are defined:
 	min_span has a value which is an int
@@ -400,6 +402,7 @@ read_libraries has a value which is a reference to a list where each element is 
 output_contigset_name has a value which is a string
 min_contig has a value which is an int
 opt_args has a value which is a kb_MiniASM.opt_args_type
+extra_params has a value which is a reference to a list where each element is a string
 
 </pre>
 
@@ -413,6 +416,7 @@ read_libraries has a value which is a reference to a list where each element is 
 output_contigset_name has a value which is a string
 min_contig has a value which is an int
 opt_args has a value which is a kb_MiniASM.opt_args_type
+extra_params has a value which is a reference to a list where each element is a string
 
 
 =end text

@@ -48,7 +48,7 @@ https://github.com/lh3/miniasm
     ######################################### noqa
     VERSION = "0.0.1"
     GIT_URL = "https://github.com/ugswork/kb_MiniASM.git"
-    GIT_COMMIT_HASH = "d13742460e84239e2fc72c114f668525ed0de1b9"
+    GIT_COMMIT_HASH = "1fefed4d250d9016c7139a7be0300362b56fbcf0"
 
     #BEGIN_CLASS_HEADER
     # Class variables and functions can be defined in this block
@@ -63,6 +63,7 @@ https://github.com/lh3/miniasm
     PARAM_IN_MIN_SPAN = 'min_span'
     PARAM_IN_MIN_COVERAGE = 'min_coverage'
     PARAM_IN_MIN_OVERLAP = 'min_overlap'
+    PARAM_IN_EXTRA_PARAMS = 'extra_params'
 
     INVALID_WS_OBJ_NAME_RE = re.compile('[^\\w\\|._-]')
     INVALID_WS_NAME_RE = re.compile('[^\\w:._-]')
@@ -163,8 +164,7 @@ https://github.com/lh3/miniasm
         # use minimap_outfile as input to MiniASM assembler
         # output file from the assembler saved in miniasm_gfa_outfile
 
-        miniasm_cmd = ['miniasm', '-f', reads_data[0]['fwd_file'],
-                       minimap_outfile]
+        miniasm_cmd = ['miniasm', '-f', reads_data[0]['fwd_file']]
 
         if self.PARAM_IN_OPT_ARGS in params_in and params_in[self.PARAM_IN_OPT_ARGS] is not None:
             oargs = params_in[self.PARAM_IN_OPT_ARGS]
@@ -180,6 +180,12 @@ https://github.com/lh3/miniasm
             if int(oargs[self.PARAM_IN_MIN_OVERLAP]) > 0:
                 miniasm_cmd.append('-o')
                 miniasm_cmd.append(str(oargs[self.PARAM_IN_MIN_OVERLAP]))
+
+        if params_in[self.PARAMS_IN_EXTRA_PARAMS]:
+            for ep in params_in[self.PARAMS_IN_EXTRA_PARAMS]:
+                miniasm_cmd.append(ep)
+
+        miniasm_cmd.append(minimap_outfile)
 
         print("\nMiniASM CMD:     " + str(miniasm_cmd) + "Outfile: " + miniasm_gfa_outfile)
         self.log(miniasm_cmd)
@@ -376,7 +382,8 @@ https://github.com/lh3/miniasm
            list<paired_end_lib> read_libraries - Illumina PairedEndLibrary
            files to assemble. string output_contigset_name - the name of the
            output contigset) -> structure: parameter "min_span" of Long,
-           parameter "min_coverage" of Long, parameter "min_overlap" of Long
+           parameter "min_coverage" of Long, parameter "min_overlap" of Long,
+           parameter "extra_params" of list of String
         :returns: instance of type "MiniASM_Output" (Output parameters for
            MiniASM run. string report_name - the name of the
            KBaseReport.Report workspace object. string report_ref - the
