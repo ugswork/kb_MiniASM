@@ -9,7 +9,7 @@ module kb_MiniASM {
     /* The workspace object name of a PairedEndLibrary file, whether of the
        KBaseAssembly or KBaseFile type.
     */
-    typedef string paired_end_lib;
+    typedef string single_end_lib;
 
     /* Input parameters for running MiniASM.
         string workspace_name - the name of the workspace from which to take
@@ -26,7 +26,7 @@ module kb_MiniASM {
 
     typedef structure {
         string               workspace_name;
-        list<paired_end_lib> read_libraries;                /*  input reads  */
+        list<single_end_lib> read_libraries;                /*  input reads  */
         string               output_contigset_name;         /*  name of output contigs */
         int                  min_contig;                    /*  (=200) minimum size of contig */
         opt_args_type        opt_args;

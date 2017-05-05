@@ -311,7 +311,7 @@ class kb_MiniASMTest(unittest.TestCase):
                         'type': ''}
 
         cls.upload_reads('pacbio_large', {'single_genome': 1},
-                         pacbio_large_reads, sequencing_tech="PacBio CLR")
+                         pacbio_large_reads, single_end=True, sequencing_tech="PacBio CLR")
 
         cls.upload_reads('pacbio_small', {'single_genome': 1},
                          pacbio_small_reads, single_end=True, sequencing_tech="PacBio CLR")

@@ -141,9 +141,9 @@ https://github.com/lh3/miniasm
         # The fq2fa can only be run on a single library
         # The library must be paired end.
 
-        if len(reads_data) > 1:  #or reads_data[0]['type'] != 'paired':
+        if len(reads_data) > 1 or reads_data[0]['type'] != 'single':
             error_msg = 'MiniASM assembly requires that one and ' + \
-                            'only one paired end library as input.'
+                            'only one single end library as input.'
             if len(reads_data) > 1:
                 error_msg += ' ' + str(len(reads_data)) + \
                                  ' libraries detected.'
@@ -181,8 +181,8 @@ https://github.com/lh3/miniasm
                 miniasm_cmd.append('-o')
                 miniasm_cmd.append(str(oargs[self.PARAM_IN_MIN_OVERLAP]))
 
-        if params_in[self.PARAMS_IN_EXTRA_PARAMS]:
-            for ep in params_in[self.PARAMS_IN_EXTRA_PARAMS]:
+        if self.PARAM_IN_EXTRA_PARAMS in params_in and params_in[self.PARAM_IN_EXTRA_PARAMS]:
+            for ep in params_in[self.PARAM_IN_EXTRA_PARAMS]:
                 miniasm_cmd.append(ep)
 
         miniasm_cmd.append(minimap_outfile)
