@@ -139,7 +139,7 @@ https://github.com/lh3/miniasm
             os.makedirs(outdir)
 
         # The fq2fa can only be run on a single library
-        # The library must be paired end.
+        # The library must be single end.
 
         if len(reads_data) > 1 or reads_data[0]['type'] != 'single':
             error_msg = 'MiniASM assembly requires that one and ' + \
@@ -431,7 +431,7 @@ https://github.com/lh3/miniasm
                    'KBaseAssembly.PairedEndLibrary')
         try:
             reads = readcli.download_reads({'read_libraries': reads_params,
-                                            'interleaved': 'true',
+                                            'interleaved': 'false',
                                             'gzipped': None
                                             })['files']
         except ServerError as se:
