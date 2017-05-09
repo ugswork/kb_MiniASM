@@ -22,6 +22,7 @@ from kb_quast.kb_quastClient import kb_quast
 from kb_quast.baseclient import ServerError as QUASTError
 from kb_ea_utils.kb_ea_utilsClient import kb_ea_utils
 import time
+from datetime import datetime
 
 class ShockException(Exception):
     pass
@@ -471,7 +472,9 @@ https://github.com/lh3/miniasm
         pprint(reads_data)
         print("============================   END OF READS_DATA: ")
 
-        outdir = os.path.join(self.scratch, 'MiniASM_dir')
+        # set the output location
+        timestamp = int((datetime.utcnow() - datetime.utcfromtimestamp(0)).total_seconds() * 1000)
+        outdir = os.path.join(self.scratch, 'MiniASM_dir-' + str(timestamp))
 
         miniasm_outfile = self.exec_MiniASM(reads_data, params, outdir)
         self.log('MiniASM output dir: ' + miniasm_outfile)
