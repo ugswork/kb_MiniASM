@@ -303,15 +303,21 @@ class kb_MiniASMTest(unittest.TestCase):
         print('staging data')
         # get file type from type
 
+        # pacbio_filtered.fastq is too large to be in git repo
+        # to download the file, use test/data/download_pacbio_filtered.fq.sh
+        # uncomment the following code to use the data file
+        # uncomment test_run_large_MiniASM() to include test function
+        
+        '''
         pacbio_large_reads = {'file': 'data/pacbio_filtered.fastq',
                               'name': '',
                               'type': ''}
+        cls.upload_reads('pacbio_large', {'single_genome': 1},
+                         pacbio_large_reads, single_end=True, sequencing_tech="PacBio CLR")
+        '''
         pacbio_small_reads = {'file': 'data/pacbio_filtered_small.fastq.gz',
                         'name': '',
                         'type': ''}
-
-        cls.upload_reads('pacbio_large', {'single_genome': 1},
-                         pacbio_large_reads, single_end=True, sequencing_tech="PacBio CLR")
 
         cls.upload_reads('pacbio_small', {'single_genome': 1},
                          pacbio_small_reads, single_end=True, sequencing_tech="PacBio CLR")
@@ -326,6 +332,7 @@ class kb_MiniASMTest(unittest.TestCase):
         return str(object_info[6]) + '/' + str(object_info[0]) + \
             '/' + str(object_info[4])
 
+    '''
     def test_run_large_MiniASM(self):
 
         self.run_success(
@@ -341,6 +348,7 @@ class kb_MiniASMTest(unittest.TestCase):
              },
             200,
             {'min_span':2000, 'min_coverage':3, 'min_overlap': 2000} )
+    '''
 
     def test_run_small_MiniASM(self):
 
