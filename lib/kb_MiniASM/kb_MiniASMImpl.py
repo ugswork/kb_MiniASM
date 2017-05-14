@@ -88,46 +88,30 @@ https://github.com/lh3/miniasm
         if not os.path.exists(outdir):
             os.makedirs(outdir)
 
-        minimap_outfile = os.path.join(outdir, 'minimap-output.gz')
+        minimap_outfile = os.path.join(outdir, 'minimap-output.paf')
 
         minimap_cmd1 = ['minimap', '-Sw5', '-L100', '-m0', '-t8',
                         input_reads['fwd_file'], input_reads['fwd_file']]
 
-        minimap_cmd2 = ['gzip', '-1']
-
-        print("minimap CMD:  " + str(minimap_cmd1) + str(minimap_cmd2) + "  outfile: " + minimap_outfile)
+        print("minimap CMD:  " + str(minimap_cmd1) + "  outfile: " + minimap_outfile)
         self.log(minimap_cmd1)
-        self.log(minimap_cmd2)
 
         minimap_of = open(minimap_outfile, 'wb')
 
         if self.DISABLE_MINIMAP_OUTPUT:
             with open(os.devnull, 'w') as null:
                 p1 = subprocess.Popen(minimap_cmd1, cwd=self.scratch, shell=False,
-                                      stdout=subprocess.PIPE, stderr=null)
-
-                p2 = subprocess.Popen(minimap_cmd2, cwd=self.scratch, shell=False,
-                                      stdin=p1.stdout, stdout=minimap_of, close_fds=True, stderr=null)
+                                      stdout=minimap_of, close_fds=True, stderr=null)
         else:
 
             p1 = subprocess.Popen(minimap_cmd1, cwd=self.scratch, shell=False,
-                                  stdout=subprocess.PIPE)
-
-            p2 = subprocess.Popen(minimap_cmd2, cwd=self.scratch, shell=False,
-                                  stdin=p1.stdout, stdout=minimap_of, close_fds=True)
+                                  stdout=minimap_of, close_fds=True)
 
         retcode1 = p1.wait()
-        p1.stdout.close()
 
         if p1.returncode != 0:
             raise ValueError('Error running minimap, return code: ' +
                              str(retcode1) + '\n')
-
-        retcode2 = p2.wait()
-
-        if p2.returncode != 0:
-            raise ValueError('Error running gzip, return code: ' +
-                             str(retcode2) + '\n')
 
         return minimap_outfile
 
@@ -414,6 +398,7 @@ https://github.com/lh3/miniasm
         for r in params[self.PARAM_IN_LIB]:
             obj_ids.append({'ref': r if '/' in r else (wsname + '/' + r)})
         ws = workspaceService(self.workspaceURL, token=token)
+
         ws_info = ws.get_object_info_new({'objects': obj_ids})
         reads_params = []
 
@@ -430,6 +415,7 @@ https://github.com/lh3/miniasm
                    'KBaseFile.PairedEndLibrary ' +
                    'KBaseAssembly.SingleEndLibrary ' +
                    'KBaseAssembly.PairedEndLibrary')
+
         try:
             reads = readcli.download_reads({'read_libraries': reads_params,
                                             'interleaved': 'false',
