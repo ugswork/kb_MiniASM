@@ -27,13 +27,26 @@ suggestions:
 # Configure the display and description of parameters
 #
 parameter-groups:
-        opt_args :
-                ui-name : |
-                        Optional Parameters
-                short-hint : |
-                        min_span, min_coverage and min_overlap
-                long-hint : |
-                        min_span, min_coverage and min_overlap
+    preSelect_args :
+        ui-name : |
+             Pre-selection parameters
+        short-hint : |
+             Pre-selection parameters
+    overlap_args :
+        ui-name : |
+             Overlap parameters
+        short-hint : |
+             Overlap parameters
+    layout_args :
+        ui-name : |
+             Layout parameters
+        short-hint : |
+             Layout parameters
+    misc_args :
+        ui-name : |
+             Miscellaneous parameters
+        short-hint : |
+             Miscellaneous parameters
 
 parameters :
     read_libraries :
@@ -51,26 +64,106 @@ parameters :
             Minimum Contig Length
         short-hint : |
             The shortest contig to accept in the resulting assembly object, should be < largest contig size
+    pre_filter :
+        ui-name : |
+            Prefilter
+        short-hint : |
+            prefilter clearly contained reads (2-pass required)
+    min_match_len :
+        ui-name : |
+            Min match length
+        short-hint : |
+            Min match length (Default: 100)
+    min_identity :
+        ui-name : |
+            Min identity
+        short-hint : |
+            Min identity (Default: 0.05)
     min_span :
         ui-name : |
-            min span
+            Min span
         short-hint : |
-            min span
+            Min span (Default: 2000)
     min_coverage :
         ui-name : |
-            min coverage
+            Min coverage
         short-hint : |
-            min coverage
+            Min coverage (Default: 3)
     min_overlap :
         ui-name : |
-            min overlap
+            Min overlap
         short-hint : |
-            min overlap
-    extra_params :
+            Min overlap (same as Min span)
+    max_overhang_len :
         ui-name : |
-            Advanced assembly parameters
+            Max overhang length (Default: 1000)
         short-hint : |
-            Enter extra assembly parameters as strings
+            Min overlap (same as Min span)
+    min_match_ratio :
+        ui-name : |
+            Min end-to-end match ratio
+        short-hint : |
+            Min end-to-end match ratio (Default: 0.8)
+    max_gap_diff :
+        ui-name : |
+            Max gap differences
+        short-hint : |
+            Max gap differences between reads for trans-reduction (Default: 1000)
+    max_dist_bubble :
+        ui-name : |
+            Max distance
+        short-hint : |
+            max distance for bubble popping (Default: 50000)
+    small_unitig_threshold :
+        ui-name : |
+            Small unitig threshold
+        short-hint : |
+            Small unitig threshold (Default: 4)
+    rounds_short_overlap :
+        ui-name : |
+            Rounds of short overlap removal
+        short-hint : |
+            Rounds of short overlap removal (Default: 3)
+    max_overlap_ratio :
+        ui-name : |
+            Max overlap drop ratio
+        short-hint : |
+            Max overlap drop ratio (Default: 0.7)
+    min_overlap_ratio :
+        ui-name : |
+            Min overlap drop ratio
+        short-hint : |
+            Min overlap drop ratio (Default: 0.5)
+    aggr_overlap_ratio :
+        ui-name : |
+            Aggressive overlap drop ratio
+        short-hint : |
+            aggressive overlap drop ratio in the end (Default: 0.8)
+    output_info :
+        ui-name : |
+            Output information
+        short-hint : |
+            Output information: bed, paf, sg or ug  (Default: ug)
+    both_directions :
+        ui-name : |
+            Directions of an arc
+        short-hint : |
+            Both directions of an arc are present in input
+    skip_1_pass :
+        ui-name : |
+            Skip 1-pass
+        short-hint : |
+            Skip 1-pass read selection
+    skip_2_pass :
+        ui-name : |
+            Skip 2-pass
+        short-hint : |
+            Skip 2-pass read selection
+    print_version :
+        ui-name : |
+            Print version
+        short-hint : |
+            Print version number
 
 #
 # Configure the display and description of parameters
