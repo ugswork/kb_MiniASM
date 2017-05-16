@@ -1,7 +1,7 @@
 #
 # define display information
 #
-name: Assemble with MiniASM
+name: Assemble with MiniASM v0.2
 tooltip: |
     Assemble long reads using the ultrafast MiniASM assembler.
 screenshots: []
