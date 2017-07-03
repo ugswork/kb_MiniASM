@@ -118,8 +118,6 @@ https://github.com/lh3/miniasm
 
     def exec_MiniASM(self, reads_data, params_in, outdir):
 
-        #threads = psutil.cpu_count() * self.THREADS_PER_CORE
-
         if not os.path.exists(outdir):
             os.makedirs(outdir)
 
@@ -409,7 +407,7 @@ https://github.com/lh3/miniasm
             obj_name = wsi[1]
             reftoname[ref] = wsi[7] + '/' + obj_name
 
-        readcli = ReadsUtils(self.callbackURL, token=ctx['token'])
+        readcli = ReadsUtils(self.callbackURL)
 
         typeerr = ('Supported types: KBaseFile.SingleEndLibrary ' +
                    'KBaseFile.PairedEndLibrary ' +
@@ -476,7 +474,7 @@ https://github.com/lh3/miniasm
                 min_contig_len = int(params[self.PARAM_IN_MIN_CONTIG])
 
         self.log('Uploading FASTA file to Assembly')
-        assemblyUtil = AssemblyUtil(self.callbackURL, token=ctx['token'], service_ver='dev')
+        assemblyUtil = AssemblyUtil(self.callbackURL)
 
         assemblyUtil.save_assembly_from_fasta({'file': {'path': output_contigs},
                                                'workspace_name': wsname,
